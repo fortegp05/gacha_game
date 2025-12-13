@@ -18,8 +18,6 @@ body {
     text-align: center;
     background: #0a5e0a;
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     max-width: 900px;
     width: 100%;
 }
@@ -34,8 +32,6 @@ h1 {
 .card-container {
     display: block;
     margin: 30px auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background: #0a5e0a;
 }
 

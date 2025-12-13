@@ -8,6 +8,38 @@ const suits = {
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
+// 当り条件（atari.ymlから読み込む想定だが、JavaScriptで直接定義）
+const atariConditions = [
+    {
+        name: "フォーカード",
+        description: "フォーカード",
+        suit: null,
+        rank_condition: "all_same",
+        color: null
+    },
+    {
+        name: "当日",
+        description: "今日の日付",
+        suit: null,
+        rank_condition: "current_date",
+        color: null
+    },
+    {
+        name: "オールブラック",
+        description: "全て黒",
+        suit: null,
+        rank_condition: null,
+        color: "black"
+    },
+    {
+        name: "オールレッド",
+        description: "全て赤",
+        suit: null,
+        rank_condition: null,
+        color: "red"
+    }
+];
+
 // 全てのカードを生成
 function createDeck() {
     const deck = [];
@@ -31,6 +63,74 @@ function shuffleDeck(deck) {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
+}
+
+// カードの色を取得
+function getCardColor(card) {
+    return (card.suit === 'hearts' || card.suit === 'diamonds') ? 'red' : 'black';
+}
+
+// 数字を数値に変換（A=1, J=11, Q=12, K=13）
+function rankToNumber(rank) {
+    if (rank === 'A') return 1;
+    if (rank === 'J') return 11;
+    if (rank === 'Q') return 12;
+    if (rank === 'K') return 13;
+    return parseInt(rank);
+}
+
+// 当り判定
+function checkAtari(cards) {
+    for (const condition of atariConditions) {
+        if (matchesCondition(cards, condition)) {
+            return condition.description;
+        }
+    }
+    return null;
+}
+
+// 条件に一致するかチェック
+function matchesCondition(cards, condition) {
+    // 色の条件チェック
+    if (condition.color !== null) {
+        const allMatchColor = cards.every(card => getCardColor(card) === condition.color);
+        if (!allMatchColor) return false;
+    }
+
+    // スートの条件チェック
+    if (condition.suit !== null) {
+        const allMatchSuit = cards.every(card => card.suit === condition.suit);
+        if (!allMatchSuit) return false;
+    }
+
+    // 数字の条件チェック
+    if (condition.rank_condition !== null) {
+        if (condition.rank_condition === "all_same") {
+            // フォーカード: 全て同じ数字
+            const firstRank = cards[0].rank;
+            const allSameRank = cards.every(card => card.rank === firstRank);
+            if (!allSameRank) return false;
+        } else if (condition.rank_condition === "current_date") {
+            // 当日: 現在日と同じ並び（例: 12/13 -> 1, 2, 1, 3）
+            const today = new Date();
+            const month = today.getMonth() + 1; // 月は0始まりなので+1
+            const day = today.getDate();
+            const dateDigits = `${month}${day}`.split('').map(d => parseInt(d));
+
+            // カードが4枚で、日付の桁数が4桁の場合のみチェック
+            if (dateDigits.length !== 4) return false;
+
+            const cardNumbers = cards.map(card => rankToNumber(card.rank));
+            const matches = dateDigits.every((digit, index) => {
+                // 0の場合は10として扱う
+                const expected = digit === 0 ? 10 : digit;
+                return cardNumbers[index] === expected;
+            });
+            if (!matches) return false;
+        }
+    }
+
+    return true;
 }
 
 // カードをcanvasに描画
@@ -110,6 +210,53 @@ function displayCards() {
         const y = startY;
         drawCard(ctx, card, x, y, cardWidth, cardHeight);
     });
+
+    // 当り判定
+    const atariResult = checkAtari(selectedCards);
+    if (atariResult) {
+        // 当り表示
+        drawAtariMessage(ctx, atariResult, startX, startY, cardWidth, gap);
+    }
+}
+
+// 当り表示を描画
+function drawAtariMessage(ctx, message, startX, startY, cardWidth, gap) {
+    // 背景の矩形を描画（半透明）
+    const messageWidth = cardWidth * 4 + gap * 3;
+    const messageHeight = 50;
+    const messageX = startX;
+    const messageY = startY - messageHeight - 20;
+
+    ctx.fillStyle = 'rgba(255, 215, 0, 0.9)'; // 金色の背景
+    ctx.strokeStyle = '#ff6b00';
+    ctx.lineWidth = 3;
+
+    // 角丸の矩形を描画
+    const radius = 10;
+    ctx.beginPath();
+    ctx.moveTo(messageX + radius, messageY);
+    ctx.lineTo(messageX + messageWidth - radius, messageY);
+    ctx.quadraticCurveTo(messageX + messageWidth, messageY, messageX + messageWidth, messageY + radius);
+    ctx.lineTo(messageX + messageWidth, messageY + messageHeight - radius);
+    ctx.quadraticCurveTo(messageX + messageWidth, messageY + messageHeight, messageX + messageWidth - radius, messageY + messageHeight);
+    ctx.lineTo(messageX + radius, messageY + messageHeight);
+    ctx.quadraticCurveTo(messageX, messageY + messageHeight, messageX, messageY + messageHeight - radius);
+    ctx.lineTo(messageX, messageY + radius);
+    ctx.quadraticCurveTo(messageX, messageY, messageX + radius, messageY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // テキストを描画
+    ctx.fillStyle = '#c0392b'; // 濃い赤
+    ctx.font = 'bold 28px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`当り: ${message}`, messageX + messageWidth / 2, messageY + messageHeight / 2);
+
+    // テキスト設定をリセット
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
 }
 
 // 初期表示

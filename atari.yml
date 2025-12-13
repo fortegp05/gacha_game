@@ -1,0 +1,29 @@
+# 当り条件の定義
+# スート: hearts, diamonds, clubs, spades, または null (未指定)
+# 数字: 具体的な値、または null (未指定)
+# 色: red, black, または null (未指定)
+
+atari_conditions:
+  - name: "フォーカード"
+    description: "フォーカード"
+    suit: null  # 未指定
+    rank_condition: "all_same"  # 全て同じ数字
+    color: null  # 未指定
+
+  - name: "当日"
+    description: "今日の日付"
+    suit: null  # 未指定
+    rank_condition: "current_date"  # 現在日と同じ並び
+    color: null  # 未指定
+
+  - name: "オールブラック"
+    description: "全て黒"
+    suit: null  # 未指定
+    rank_condition: null  # 未指定
+    color: "black"  # 全て黒
+
+  - name: "オールレッド"
+    description: "全て赤"
+    suit: null  # 未指定
+    rank_condition: null  # 未指定
+    color: "red"  # 全て赤

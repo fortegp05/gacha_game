@@ -32,59 +32,10 @@ h1 {
 }
 
 .card-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin: 30px 0;
-    flex-wrap: wrap;
-}
-
-.card {
-    width: 140px;
-    height: 200px;
-    background: white;
-    border: 2px solid #333;
+    display: block;
+    margin: 30px auto;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.card:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.card.hearts, .card.diamonds {
-    color: #e74c3c;
-}
-
-.card.clubs, .card.spades {
-    color: #2c3e50;
-}
-
-.card-top, .card-bottom {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-.card-bottom {
-    text-align: right;
-    transform: rotate(180deg);
-}
-
-.card-center {
-    font-size: 4em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .shuffle-btn {
@@ -111,16 +62,11 @@ h1 {
 }
 
 @media (max-width: 768px) {
-    .card {
-        width: 120px;
-        height: 170px;
-    }
-
-    .card-center {
-        font-size: 3em;
-    }
-
     h1 {
         font-size: 2em;
+    }
+
+    .card-container {
+        max-width: 100%;
     }
 }

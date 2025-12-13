@@ -33,28 +33,56 @@ function shuffleDeck(deck) {
     return shuffled;
 }
 
-// カードのHTML要素を作成
-function createCardElement(card) {
-    const cardDiv = document.createElement('div');
-    cardDiv.className = `card ${card.suit}`;
+// カードをcanvasに描画
+function drawCard(ctx, card, x, y, width, height) {
+    // カードの背景
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
 
-    const topDiv = document.createElement('div');
-    topDiv.className = 'card-top';
-    topDiv.textContent = `${card.rank}${card.symbol}`;
+    // 角丸の矩形を描画
+    const radius = 10;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
 
-    const centerDiv = document.createElement('div');
-    centerDiv.className = 'card-center';
-    centerDiv.textContent = card.symbol;
+    // カードの色を設定
+    const color = (card.suit === 'hearts' || card.suit === 'diamonds') ? '#e74c3c' : '#2c3e50';
+    ctx.fillStyle = color;
 
-    const bottomDiv = document.createElement('div');
-    bottomDiv.className = 'card-bottom';
-    bottomDiv.textContent = `${card.rank}${card.symbol}`;
+    // 上部のランクとスート
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText(`${card.rank}${card.symbol}`, x + 10, y + 25);
 
-    cardDiv.appendChild(topDiv);
-    cardDiv.appendChild(centerDiv);
-    cardDiv.appendChild(bottomDiv);
+    // 中央のスート
+    ctx.font = '60px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(card.symbol, x + width / 2, y + height / 2);
 
-    return cardDiv;
+    // 下部のランクとスート（回転）
+    ctx.save();
+    ctx.translate(x + width - 10, y + height - 25);
+    ctx.rotate(Math.PI);
+    ctx.font = 'bold 20px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(`${card.rank}${card.symbol}`, 0, 0);
+    ctx.restore();
+
+    // テキスト設定をリセット
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
 }
 
 // カードを表示
@@ -63,24 +91,24 @@ function displayCards() {
     const shuffled = shuffleDeck(deck);
     const selectedCards = shuffled.slice(0, 4); // 4枚のカードを選択
 
-    const container = document.getElementById('card-container');
-    container.innerHTML = ''; // 既存のカードをクリア
+    const canvas = document.getElementById('card-container');
+    const ctx = canvas.getContext('2d');
 
+    // canvasをクリア
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // カードのサイズと配置
+    const cardWidth = 140;
+    const cardHeight = 200;
+    const gap = 20;
+    const startX = (canvas.width - (cardWidth * 4 + gap * 3)) / 2;
+    const startY = (canvas.height - cardHeight) / 2;
+
+    // 各カードを描画
     selectedCards.forEach((card, index) => {
-        const cardElement = createCardElement(card);
-        // アニメーション用の遅延を追加
-        setTimeout(() => {
-            cardElement.style.opacity = '0';
-            cardElement.style.transform = 'translateY(20px)';
-            container.appendChild(cardElement);
-
-            // フェードインアニメーション
-            setTimeout(() => {
-                cardElement.style.transition = 'all 0.5s ease';
-                cardElement.style.opacity = '1';
-                cardElement.style.transform = 'translateY(0)';
-            }, 10);
-        }, index * 100);
+        const x = startX + (cardWidth + gap) * index;
+        const y = startY;
+        drawCard(ctx, card, x, y, cardWidth, cardHeight);
     });
 }
 

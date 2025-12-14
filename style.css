@@ -29,10 +29,23 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+p {
+    color: #fff;
+    padding: 15px 40px;
+}
+
 .card-container {
     display: block;
     margin: 30px auto;
     background: #0a5e0a;
+}
+
+.atari-buttons {
+    text-align: center;
+}
+
+.share-button {
+    padding: 15px 40px;
 }
 
 /* すべてのボタンに統一されたデザインを適用 */

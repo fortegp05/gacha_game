@@ -13,11 +13,18 @@
             <!-- カードがここに動的に表示されます -->
         </canvas>
         <button id="shuffle-btn" class="shuffle-btn">カードをシャッフル</button>
-        <div id="atari-buttons" class="atari-buttons" style="display: none;">
-            <button id="retry-btn" class="retry-btn">もう一度回す</button>
-            <button id="share-btn" class="share-btn">結果をTwitter(X)にシェア</button>
+        <div id="atari-buttons" class="atari-buttons">
+            <button id="retry-btn" class="retry-btn" style="display: none;">もう一度回す</button>
         </div>
-        <a href="https://twitter.com/intent/tweet?button_hashtag=毎日ガチャゲーム&ref_src=twsrc%5Etfw" class="twitter-hashtag-button">Tweet #毎日ガチャゲーム</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <div class="share-button">
+            <p>ぜひガチャ結果を画像保存してシェアしてください！</p>
+            <a href="https://twitter.com/intent/tweet?hashtags=毎日ガチャゲーム&ref_src=twsrc%5Etfw"
+            class="twitter-hashtag-button"
+            >
+                Tweet #毎日ガチャゲーム
+            </a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
     </div>
     <a href="https://fortegp05.net/" target="_blank" rel="noopener noreferrer" class="creator-credit">Created by FORTEgp05</a>
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>

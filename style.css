@@ -35,7 +35,8 @@ h1 {
     background: #0a5e0a;
 }
 
-.shuffle-btn {
+/* すべてのボタンに統一されたデザインを適用 */
+button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
@@ -49,12 +50,12 @@ h1 {
     margin-top: 20px;
 }
 
-.shuffle-btn:hover {
+button:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.shuffle-btn:active {
+button:active {
     transform: scale(0.98);
 }
 

@@ -221,6 +221,9 @@ function displayCards() {
         // ハズレ時の処理（ボタンを通常状態に戻す）
         handleHazure();
     }
+
+    // canvasをimgタグに変換
+    convertCanvasToImage();
 }
 
 // 当たり時の処理
@@ -266,6 +269,21 @@ function retryGacha() {
 
     // カードをシャッフル
     displayCards();
+}
+
+// canvasをimgタグに変換
+function convertCanvasToImage() {
+    const canvas = document.getElementById('card-container');
+    const img = document.getElementById('card-image');
+
+    // canvasの内容をData URLとして取得
+    const dataURL = canvas.toDataURL('image/png');
+
+    // imgタグにData URLを設定
+    img.src = dataURL;
+
+    // canvasを非表示にする
+    canvas.style.display = 'none';
 }
 
 // 当り表示を描画

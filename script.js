@@ -213,10 +213,59 @@ function displayCards() {
     } else if (atariResult) {
         // 当り表示
         drawAtariMessage(ctx, atariResult, startX, startY, cardWidth, gap);
+        // 当たり時の処理
+        handleAtari();
     } else {
         // ハズレ表示
         drawAtariMessage(ctx, 'ハズレ', startX, startY, cardWidth, gap);
+        // ハズレ時の処理（ボタンを通常状態に戻す）
+        handleHazure();
     }
+}
+
+// 当たり時の処理
+function handleAtari() {
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const atariButtons = document.getElementById('atari-buttons');
+
+    // シャッフルボタンをグレーアウトして無効化
+    shuffleBtn.disabled = true;
+    shuffleBtn.style.opacity = '0.5';
+    shuffleBtn.style.cursor = 'not-allowed';
+
+    // 当たり用ボタンを表示
+    atariButtons.style.display = 'block';
+}
+
+// ハズレ時の処理
+function handleHazure() {
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const atariButtons = document.getElementById('atari-buttons');
+
+    // シャッフルボタンを有効化
+    shuffleBtn.disabled = false;
+    shuffleBtn.style.opacity = '1';
+    shuffleBtn.style.cursor = 'pointer';
+
+    // 当たり用ボタンを非表示
+    atariButtons.style.display = 'none';
+}
+
+// もう一度回す処理
+function retryGacha() {
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const atariButtons = document.getElementById('atari-buttons');
+
+    // シャッフルボタンを有効化
+    shuffleBtn.disabled = false;
+    shuffleBtn.style.opacity = '1';
+    shuffleBtn.style.cursor = 'pointer';
+
+    // 当たり用ボタンを非表示
+    atariButtons.style.display = 'none';
+
+    // カードをシャッフル
+    displayCards();
 }
 
 // 当り表示を描画
@@ -267,5 +316,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     shuffleBtn.addEventListener('click', () => {
         hasShuffled = true; // ボタンがクリックされたことを記録
         displayCards();
+    });
+
+    // もう一度回すボタンのイベントリスナー
+    const retryBtn = document.getElementById('retry-btn');
+    retryBtn.addEventListener('click', retryGacha);
+
+    // Twitterシェアボタンのイベントリスナー（未実装）
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn.addEventListener('click', () => {
+        // 今回は未実装
+        console.log('Twitterシェア機能は未実装です');
     });
 });

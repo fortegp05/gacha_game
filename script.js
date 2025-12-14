@@ -226,7 +226,7 @@ function displayCards() {
 // 当たり時の処理
 function handleAtari() {
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const atariButtons = document.getElementById('atari-buttons');
+    const retryBtn = document.getElementById('retry-btn');
 
     // シャッフルボタンをグレーアウトして無効化
     shuffleBtn.disabled = true;
@@ -234,13 +234,13 @@ function handleAtari() {
     shuffleBtn.style.cursor = 'not-allowed';
 
     // 当たり用ボタンを表示
-    atariButtons.style.display = 'block';
+    retryBtn.style.display = 'inline-block';
 }
 
 // ハズレ時の処理
 function handleHazure() {
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const atariButtons = document.getElementById('atari-buttons');
+    const retryBtn = document.getElementById('retry-btn');
 
     // シャッフルボタンを有効化
     shuffleBtn.disabled = false;
@@ -248,13 +248,13 @@ function handleHazure() {
     shuffleBtn.style.cursor = 'pointer';
 
     // 当たり用ボタンを非表示
-    atariButtons.style.display = 'none';
+    retryBtn.style.display = 'none';
 }
 
 // もう一度回す処理
 function retryGacha() {
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const atariButtons = document.getElementById('atari-buttons');
+    const retryBtn = document.getElementById('retry-btn');
 
     // シャッフルボタンを有効化
     shuffleBtn.disabled = false;
@@ -262,7 +262,7 @@ function retryGacha() {
     shuffleBtn.style.cursor = 'pointer';
 
     // 当たり用ボタンを非表示
-    atariButtons.style.display = 'none';
+    retryBtn.style.display = 'none';
 
     // カードをシャッフル
     displayCards();

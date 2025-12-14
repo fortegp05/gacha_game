@@ -221,56 +221,30 @@ function displayCards() {
 
 // 当り表示を描画
 function drawAtariMessage(ctx, message, startX, startY, cardWidth, gap) {
-    // 背景の矩形を描画（半透明）
+    // メッセージ領域の位置とサイズ
     const messageWidth = cardWidth * 4 + gap * 3;
     const messageHeight = 50;
     const messageX = startX;
     const messageY = startY - messageHeight - 20;
 
-    // メッセージの種類によって背景色とテキストを変更
-    let bgColor, strokeColor, textColor, displayText;
+    // メッセージの種類によってテキスト色とテキストを変更
+    let textColor, displayText;
 
     if (message === null) {
         // 初期状態: 「ガチャを回す」
-        bgColor = 'rgba(100, 149, 237, 0.9)'; // 青色の背景
-        strokeColor = '#4169e1';
-        textColor = '#ffffff'; // 白
+        textColor = '#6495ed'; // 青色
         displayText = 'ガチャを回す';
     } else if (message === 'ハズレ') {
         // ハズレの場合
-        bgColor = 'rgba(169, 169, 169, 0.9)'; // グレーの背景
-        strokeColor = '#808080';
-        textColor = '#333333'; // 濃いグレー
+        textColor = '#808080'; // グレー
         displayText = 'ハズレ';
     } else {
         // 当りの場合
-        bgColor = 'rgba(255, 215, 0, 0.9)'; // 金色の背景
-        strokeColor = '#ff6b00';
-        textColor = '#c0392b'; // 濃い赤
+        textColor = '#ffd700'; // 金色
         displayText = `当り: ${message}`;
     }
 
-    ctx.fillStyle = bgColor;
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = 3;
-
-    // 角丸の矩形を描画
-    const radius = 10;
-    ctx.beginPath();
-    ctx.moveTo(messageX + radius, messageY);
-    ctx.lineTo(messageX + messageWidth - radius, messageY);
-    ctx.quadraticCurveTo(messageX + messageWidth, messageY, messageX + messageWidth, messageY + radius);
-    ctx.lineTo(messageX + messageWidth, messageY + messageHeight - radius);
-    ctx.quadraticCurveTo(messageX + messageWidth, messageY + messageHeight, messageX + messageWidth - radius, messageY + messageHeight);
-    ctx.lineTo(messageX + radius, messageY + messageHeight);
-    ctx.quadraticCurveTo(messageX, messageY + messageHeight, messageX, messageY + messageHeight - radius);
-    ctx.lineTo(messageX, messageY + radius);
-    ctx.quadraticCurveTo(messageX, messageY, messageX + radius, messageY);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // テキストを描画
+    // テキストのみを描画（背景なし）
     ctx.fillStyle = textColor;
     ctx.font = 'bold 28px Arial';
     ctx.textAlign = 'center';

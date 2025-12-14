@@ -8,37 +8,26 @@ const suits = {
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-// 当り条件（atari.ymlから読み込む想定だが、JavaScriptで直接定義）
-const atariConditions = [
-    {
-        name: "フォーカード",
-        description: "フォーカード",
-        suit: null,
-        rank_condition: "all_same",
-        color: null
-    },
-    {
-        name: "当日",
-        description: "今日の日付",
-        suit: null,
-        rank_condition: "current_date",
-        color: null
-    },
-    {
-        name: "オールブラック",
-        description: "全て黒",
-        suit: null,
-        rank_condition: null,
-        color: "black"
-    },
-    {
-        name: "オールレッド",
-        description: "全て赤",
-        suit: null,
-        rank_condition: null,
-        color: "red"
+// 当り条件（GitHubから読み込む）
+let atariConditions = [];
+
+// GitHubからatari.ymlを読み込む
+async function loadAtariConditions() {
+    try {
+        const response = await fetch('https://raw.githubusercontent.com/fortegp05/gacha_game/main/atari.yml');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const yamlText = await response.text();
+        const data = jsyaml.load(yamlText);
+        atariConditions = data.atari_conditions || [];
+        console.log('atari.ymlを読み込みました:', atariConditions);
+    } catch (error) {
+        console.error('atari.ymlの読み込みに失敗しました:', error);
+        // エラー時は空の配列を使用
+        atariConditions = [];
     }
-];
+}
 
 // 全てのカードを生成
 function createDeck() {
@@ -260,7 +249,9 @@ function drawAtariMessage(ctx, message, startX, startY, cardWidth, gap) {
 }
 
 // 初期表示
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // atari.ymlを読み込んでから初期表示
+    await loadAtariConditions();
     displayCards();
 
     // シャッフルボタンのイベントリスナー

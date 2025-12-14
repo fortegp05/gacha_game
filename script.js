@@ -11,6 +11,9 @@ const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 // 当り条件（GitHubから読み込む）
 let atariConditions = [];
 
+// シャッフルボタンがクリックされたかどうかのフラグ
+let hasShuffled = false;
+
 // GitHubからatari.ymlを読み込む
 async function loadAtariConditions() {
     try {
@@ -202,9 +205,17 @@ function displayCards() {
 
     // 当り判定
     const atariResult = checkAtari(selectedCards);
-    if (atariResult) {
+
+    // メッセージの表示
+    if (!hasShuffled) {
+        // 初期状態: 「ガチャを回す」を表示
+        drawAtariMessage(ctx, null, startX, startY, cardWidth, gap);
+    } else if (atariResult) {
         // 当り表示
         drawAtariMessage(ctx, atariResult, startX, startY, cardWidth, gap);
+    } else {
+        // ハズレ表示
+        drawAtariMessage(ctx, 'ハズレ', startX, startY, cardWidth, gap);
     }
 }
 
@@ -216,8 +227,31 @@ function drawAtariMessage(ctx, message, startX, startY, cardWidth, gap) {
     const messageX = startX;
     const messageY = startY - messageHeight - 20;
 
-    ctx.fillStyle = 'rgba(255, 215, 0, 0.9)'; // 金色の背景
-    ctx.strokeStyle = '#ff6b00';
+    // メッセージの種類によって背景色とテキストを変更
+    let bgColor, strokeColor, textColor, displayText;
+
+    if (message === null) {
+        // 初期状態: 「ガチャを回す」
+        bgColor = 'rgba(100, 149, 237, 0.9)'; // 青色の背景
+        strokeColor = '#4169e1';
+        textColor = '#ffffff'; // 白
+        displayText = 'ガチャを回す';
+    } else if (message === 'ハズレ') {
+        // ハズレの場合
+        bgColor = 'rgba(169, 169, 169, 0.9)'; // グレーの背景
+        strokeColor = '#808080';
+        textColor = '#333333'; // 濃いグレー
+        displayText = 'ハズレ';
+    } else {
+        // 当りの場合
+        bgColor = 'rgba(255, 215, 0, 0.9)'; // 金色の背景
+        strokeColor = '#ff6b00';
+        textColor = '#c0392b'; // 濃い赤
+        displayText = `当り: ${message}`;
+    }
+
+    ctx.fillStyle = bgColor;
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 3;
 
     // 角丸の矩形を描画
@@ -237,11 +271,11 @@ function drawAtariMessage(ctx, message, startX, startY, cardWidth, gap) {
     ctx.stroke();
 
     // テキストを描画
-    ctx.fillStyle = '#c0392b'; // 濃い赤
+    ctx.fillStyle = textColor;
     ctx.font = 'bold 28px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`当り: ${message}`, messageX + messageWidth / 2, messageY + messageHeight / 2);
+    ctx.fillText(displayText, messageX + messageWidth / 2, messageY + messageHeight / 2);
 
     // テキスト設定をリセット
     ctx.textAlign = 'left';
@@ -256,5 +290,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // シャッフルボタンのイベントリスナー
     const shuffleBtn = document.getElementById('shuffle-btn');
-    shuffleBtn.addEventListener('click', displayCards);
+    shuffleBtn.addEventListener('click', () => {
+        hasShuffled = true; // ボタンがクリックされたことを記録
+        displayCards();
+    });
 });
